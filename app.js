@@ -3,7 +3,6 @@ let express = require('express');
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
-let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 let authRouter = require('./routes/auth');
 let globalObj = require('./common/globalObj');
@@ -18,17 +17,17 @@ let debug = require('debug')('sample-demo:server');
 let http = require('http');
 
 // view engine setup
-
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/', indexRouter);
-app.use('/users',globalObj.checkToken, usersRouter);
-app.use('/auth', authRouter);
 
-//Mongodb connect
+//router
+app.use('/auth', authRouter);
+app.use('/users', globalObj.checkToken, usersRouter);
+
+//Mongodb connections
 mongoose.connect('mongodb://127.0.0.1:27017/SAMPLE_DEMO', {
   useCreateIndex: true,
   socketTimeoutMS: 360000,
@@ -39,13 +38,14 @@ mongoose.connect('mongodb://127.0.0.1:27017/SAMPLE_DEMO', {
 }).then(() => {
 }).catch((err) => console.error(err));
 
+
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
