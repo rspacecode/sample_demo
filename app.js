@@ -3,10 +3,13 @@ let express = require('express');
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
-
+//Routers
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 let authRouter = require('./routes/auth');
+let skuRouter = require('./routes/sku');
+let saleRouter = require('./routes/sale');
+
 let globalObj = require('./common/globalObj');
 
 let mongoose = require('mongoose');
@@ -24,11 +27,14 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.set('view engine', 'html');
 //router
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/users', globalObj.checkToken, usersRouter);
+app.use('/sale', globalObj.checkToken, saleRouter);
+app.use('/sku', globalObj.checkToken, skuRouter);
+
 
 //Mongodb connections
 mongoose.connect('mongodb://127.0.0.1:27017/SAMPLE_DEMO', {

@@ -22,7 +22,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     await User.findOne({userId: req.body.userId}, async (err, user) => {
         if (!err && user !== null) {
-            if (!user.validPassword(req.body.password))
+            if (!bcrypt.compareSync(req.body.password, user.password))
                 return res.json(globalObj.getResponseObject(false, {msg: globalObj.INVALID_PASSWORD}, {}, []));
             else {
                 let payload = JSON.parse(JSON.stringify(user));

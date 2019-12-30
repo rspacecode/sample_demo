@@ -2740,7 +2740,7 @@ router.delete('/', async function (req, res) {
             res.json(stObj.getResponseObject(true, {}, quote, []));
         }
     });
-});
+}); 
 
 
 module.exports = router;

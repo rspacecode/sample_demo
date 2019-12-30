@@ -13,6 +13,7 @@ Global.USER_NOT_FOUND = "User not found";
 Global.USER_LOGOUT = "User logout.";
 Global.INVALID_TOKEN = "Invalid Token";
 Global.TOKEN_EXP = '1h';
+Global.INVALID_REQUEST = 'Invalid request';
 
 
 Global.getResponseObject = (status, errors, data, dataArray) => {
@@ -23,7 +24,7 @@ Global.getResponseObject = (status, errors, data, dataArray) => {
     responseObj.status = status;
     responseObj.errors = errors;
     responseObj.data = (data === undefined) ? {} : data;
-    responseObj.data_array = (dataArray === undefined) ? [] : dataArray;
+    responseObj.dataArray = (dataArray === undefined) ? [] : dataArray;
     return responseObj;
 };
 
@@ -41,7 +42,7 @@ Global.checkToken = async (req, res, next) => {
     }
     jwt.verify(mToken, Global.JWT_KEY, async function (err, decoded) {
             if (err) {
-                return res.json(Global.getResponseObject(false, {msg: Global.INVALID_TOKEN}, {}, []));
+                return res.json(Global.getResponseObject(false, {msg: Global.INVALID_TOKEN + " " + err.message}, {}, []));
             } else {
                 await User.findOne(mQuery, async function (err, cUser) {
                     if (cUser !== null) {
